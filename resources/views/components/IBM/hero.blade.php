@@ -1,5 +1,5 @@
 <!-- Hero Section Begin -->
-<section class="hero spad set-bg d-flex align-items-center" data-setbg="{{ asset('front/bg.png') }}" style="min-height: 100vh; padding: 80px 0; background-size: cover; background-position: center;">
+<section class="hero spad set-bg d-flex align-items-center" data-setbg="{{ asset('hh.png') }}" style="min-height: 100vh; padding: 80px 0; background-size: cover; background-position: center;">
     <div class="container">
         <div class="row align-items-center gy-5">
             
