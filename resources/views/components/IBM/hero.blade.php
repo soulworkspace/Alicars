@@ -8,7 +8,7 @@
                 <div class="hero__text" style="max-width: 100%;">
                     <div class="hero__text__title mb-4">
                         <span class="d-block mb-2" style="text-transform: uppercase; letter-spacing: 2px; font-weight: 700; color: #4B9FE1; font-size: calc(12px + 0.3vw);">
-                            Welcome to MB Motors
+                            Welcome to Hadj Aissa
                         </span>
                         <h1 class="mb-0" style="font-weight: 900; text-transform: uppercase; font-size: calc(28px + 1.5vw); line-height: 1.2; color: #fff;">
                             Find Your Next Vehicle
@@ -17,10 +17,10 @@
                     
                     <!-- Action Buttons -->
                     <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-lg-start gap-3 mt-4" style="gap: 15px;">
-                        <a href="#showroom" class="primary-btn m-0 w-100 w-sm-auto text-center" style="text-transform: uppercase; font-weight: 700; background: #1D3354; border-color: #1D3354; padding: 14px 30px; border-radius: 4px; color: #fff;">
+                        <a href="#collections" class="primary-btn m-0 w-100 w-sm-auto text-center" style="text-transform: uppercase; font-weight: 700; background: #1D3354; border-color: #1D3354; padding: 14px 30px; border-radius: 4px; color: #fff;">
                             View Offers
                         </a>
-                        <a href="#" class="primary-btn more-btn m-0 w-100 w-sm-auto text-center" style="text-transform: uppercase; font-weight: 700; padding: 14px 30px; border-radius: 4px; background: transparent; border: 2px solid #c2c2c2; color: #c2c2c2;">
+                        <a href="/ads" class="primary-btn more-btn m-0 w-100 w-sm-auto text-center" style="text-transform: uppercase; font-weight: 700; padding: 14px 30px; border-radius: 4px; background: transparent; border: 2px solid #c2c2c2; color: #c2c2c2;">
                             Learn More
                         </a>
                     </div>

@@ -1,5 +1,5 @@
 <!-- Services Section Begin -->
-<section class="services spad">
+<section class="services spad" id="services">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">

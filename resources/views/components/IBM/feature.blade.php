@@ -1,4 +1,4 @@
-<section class="feature spad">
+<section class="feature spad" id="Trusted">
     <div class="container">
         <div class="row gy-5 align-items-center">
             
@@ -8,10 +8,10 @@
                         <span>Our Strengths</span>
                         <h2>A Trusted Name In Automotive</h2>
                     </div>
-                    <div class="feature__text__desc">
-                        <p>At MB Motors, we are committed to complete transparency for every vehicle purchase, sale, or trade-in transaction.</p>
-                        <p>Every vehicle in our inventory undergoes a rigorous inspection of its key components to ensure your safety and peace of mind on the road.</p>
-                    </div>
+                    <div class="feature__text__desc" dir="ltr" style="text-align: left;">
+    <p>At Hadj Aissa, we are committed to complete transparency for every vehicle purchase, sale, or trade-in transaction.</p>
+    <p>Every vehicle in our inventory undergoes a rigorous inspection of its key components to ensure your safety and peace of mind on the road.</p>
+</div>
                     <div class="feature__text__btn">
                         <a href="#" class="primary-btn">About Us</a>
                         <a href="#" class="primary-btn partner-btn">Our Partners</a>
