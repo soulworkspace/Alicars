@@ -10,14 +10,22 @@ class Home extends Component
     public function render()
     {
         // جلب أحدث 4 إعلانات
-        $recentAds = Ad::with('primaryImage')
+        $recentAds = Ad::with([
+            'attributes:id,name,label',
+            'category:id,name',
+            'images:id,ad_id,image_path,is_primary,sort_order',
+        ])
             ->where('status', 'active')
             ->latest()
             ->take(4)
             ->get();
 
         // جلب الإعلانات المميزة
-        $featuredAds = FeaturedAd::with('ad.primaryImage')
+        $featuredAds = FeaturedAd::with([
+            'ad.attributes:id,name,label',
+            'ad.category:id,name',
+            'ad.images:id,ad_id,image_path,is_primary,sort_order',
+        ])
             ->where('is_active', true)
             ->get();
 

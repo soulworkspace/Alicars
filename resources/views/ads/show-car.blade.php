@@ -61,6 +61,7 @@
 </style>
 
 <div class="container py-5">
+    <h1>555</h1>
     <div class="row g-4">
         <!-- Main Content (تفاصيل السيارة والصور) -->
         <div class="col-xl-8 col-lg-8 col-md-12">

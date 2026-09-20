@@ -138,6 +138,7 @@ Route::view('/privacy', 'pages.privacy')->name('privacy');
 | 4. المسارات الديناميكية العامة (توضع في نهاية الملف منعاً للـ Hijacking)
 |--------------------------------------------------------------------------
 */
+Route::get('/ads/{slug}/preview', [AdController::class, 'preview'])->name('ads.preview');
 Route::get('/ads/{slug}', [AdController::class, 'show'])->name('ads.show');
 
 require __DIR__.'/auth.php';

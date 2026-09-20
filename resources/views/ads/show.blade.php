@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $ad->title . ' | MB MOTORS')
+@section('title', $ad->title . ' | Hadj Aissa')
 
 @section('content')
 <script src="https://cdn.tailwindcss.com"></script>

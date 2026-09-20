@@ -39,7 +39,7 @@
             <div class="col-lg-6 col-md-12">
                 <div class="chooseus-video-wrapper position-relative rounded-4 overflow-hidden shadow-lg">
                     <!-- Image -->
-                    <img src="{{ asset('front/img/chooseus-video.png') }}" alt="Why Choose Us" class="w-100 h-100 object-fit-cover d-block" style="min-height: 380px; max-height: 480px; object-fit: cover;">
+                    <img src="{{ asset('choos.jfif') }}" alt="Why Choose Us" class="w-100 h-100 object-fit-cover d-block" >
                     
                     <!-- Overlay Dark Film -->
                     <div class="position-absolute top-0 start-0 w-100 h-100" style="background: rgba(29, 51, 84, 0.15);"></div>
@@ -71,4 +71,9 @@
         transform: translateY(-2px);
         box-shadow: 0 6px 18px rgba(75, 159, 225, 0.3);
     }
+
+
+    section.chooseus-custom.py-5.bg-white.overflow-hidden {
+    background-color: #f7f7f7 !important;
+}
 </style>

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
 
@@ -103,6 +104,61 @@ class AdController extends Controller
         $ad->incrementViews();
 
         return view('ads.show', compact('ad'));
+    }
+
+    /**
+     * Return the small, public payload used by the card hover preview.
+     */
+    public function preview(string $slug)
+    {
+        $preview = Cache::remember("ad-preview:{$slug}", now()->addMinutes(5), function () use ($slug) {
+            $ad = Ad::query()
+                ->active()
+                ->where('slug', $slug)
+                ->with([
+                    'attributes:id,name,label',
+                    'category:id,name',
+                    'images:id,ad_id,image_path,is_primary,sort_order',
+                ])
+                ->firstOrFail();
+
+            $attributes = $ad->attributes->mapWithKeys(function ($attribute) {
+                $keys = array_filter([
+                    strtolower((string) $attribute->name),
+                    strtolower((string) $attribute->label),
+                ]);
+
+                return collect($keys)->mapWithKeys(fn ($key) => [$key => $attribute->pivot->value])->all();
+            });
+
+            $value = function (array $keys, $fallback = 'N/A') use ($attributes) {
+                foreach ($keys as $key) {
+                    $normalised = strtolower($key);
+                    if (filled($attributes->get($normalised))) {
+                        return $attributes->get($normalised);
+                    }
+                }
+
+                return filled($fallback) ? $fallback : 'N/A';
+            };
+
+            return [
+                'title' => $ad->title ?: 'Vehicle',
+                'description' => str($ad->description ?: '')->squish()->limit(140)->toString(),
+                'category' => $ad->category?->name ?: 'Vehicle',
+                'condition' => $ad->condition ?: 'used',
+                'price' => $ad->price !== null ? number_format((float) $ad->price) . ' ' . ($ad->currency ?: 'DZD') : 'Contact for price',
+                'specs' => [
+                    'engine' => $value(['engine', 'motor', 'moteur', 'المحرك']),
+                    'fuel' => $value(['fuel', 'fuel_type', 'carburant', 'الوقود']),
+                    'mileage' => $value(['mileage', 'kilometers', 'kilometres', 'kilometrage', 'الكيلومترات']),
+                    'documents' => $value(['documents', 'document_status', 'registration', 'gray_card', 'carte_grise', 'البطاقة الرمادية', 'الوثائق']),
+                ],
+                'images' => $ad->images->take(3)->map(fn ($image) => asset('storage/' . $image->image_path))->values(),
+            ];
+        });
+
+        return response()->json($preview);
     }
 
     /**
