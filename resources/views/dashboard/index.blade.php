@@ -86,7 +86,7 @@
             <div class="card p-6 border-t-4 border-indigo-500">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="font-bold text-lg">أحدث طلبات البيع</h3>
-                    <span class="text-[10px] bg-indigo-500/10 text-indigo-400 px-2 py-1 rounded-full uppercase tracking-wider">Trico Orders</span>
+                    <span class="text-[10px] bg-indigo-500/10 text-indigo-400 px-2 py-1 rounded-full uppercase tracking-wider">HadjAissa Orders</span>
                 </div>
                 
                 @if($recentOrders->count() > 0)

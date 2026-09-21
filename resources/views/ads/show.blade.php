@@ -195,11 +195,11 @@
                                 <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $whatsappNum) }}" 
                                    target="_blank"
                                    class="flex items-center justify-center gap-2 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-600 hover:text-white py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all border border-emerald-500/20 shadow-sm">
-                                     <i class="fab fa-whatsapp text-sm"></i> مراسلة واتساب
+                                   <i class="fab fa-whatsapp text-sm"></i> مراسلة واتساب
                                 </a>
 
                                 <a href="tel:{{ $phoneNum }}" class="flex items-center justify-center bg-zinc-100 dark:bg-white/5 text-zinc-900 dark:text-white py-5 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all hover:bg-zinc-200 dark:hover:bg-white/10">
-                                     <i class="fa-solid fa-phone-flip ml-2 text-[10px]"></i> اتصل بالبائع
+                                   <i class="fa-solid fa-phone-flip ml-2 text-[10px]"></i> اتصل بالبائع
                                 </a>
                             </div>
 

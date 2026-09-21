@@ -16,6 +16,7 @@
         @endforelse
     </div>
     @include('components.IBM.chooseus')
+    @include('components.IBM.ai')
 
     
 </div>

@@ -178,7 +178,7 @@
         <aside class="sidebar flex flex-col" id="sidebar">
             <div class="p-6 border-b border-white/5">
                 <a href="{{ route('home') }}" class="flex items-center gap-2">
-                    <span class="font-international text-2xl font-black tracking-tighter text-white uppercase">TRI<span class="text-[#10b981]">CO</span></span>
+                    <span class="font-international text-2xl font-black tracking-tighter text-white uppercase">Hadj<span class="text-[#10b981]">Aissa</span></span>
                 </a>
                 <p class="text-xs text-gray-500 mt-2">لوحة التحكم</p>
             </div>

@@ -6,7 +6,7 @@ use App\Http\Controllers\{
     DashboardController, MessageController, FavoriteController,
     NotificationController, SearchController, ProfileController,
     StoreSetupController, VendorDashboardController, CartController,
-    OrderController, CheckoutController
+    OrderController, CheckoutController, GeminiController
 };
 use App\Livewire\{Home, AdListing};
 use App\Livewire\Admin\Orders\OrderIndex;
@@ -20,6 +20,7 @@ use App\Livewire\Admin\Orders\OrderShow;
 Route::get('/', Home::class)->name('home');
 Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::get('/search/suggestions', [SearchController::class, 'suggestions'])->name('search.suggestions');
+Route::post('/ai/chat', [GeminiController::class, 'chat'])->name('ai.chat');
 
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/stores', [StoreController::class, 'index'])->name('stores.index');
