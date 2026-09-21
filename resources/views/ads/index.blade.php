@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'معرض السيارات | Jmou3y Auto - الحاج عيسى')
+@section('title', 'معرض السيارات | HA - الحاج عيسى')
 
 @section('content')
 <section class="car-shop-section spad bg-light" dir="rtl">
@@ -14,7 +14,7 @@
                         <i class="fa fa-shield-alt ms-1"></i> سوق السيارات في الجزائر
                     </span>
                     <h2 class="font-weight-bold text-dark mt-2" style="font-size: 32px;">
-                        معرض <span style="color: #4B9FE1;">Jmou3y Auto</span>
+معرض <span style="color: #4B9FE1;">Hadj Aissa</span>
                     </h2>
                     <p class="text-muted mt-1" style="font-size: 14px;">
                         تصفح أفضل عروض السيارات المتاحة للبيع والاستبدال تحت إشراف **الحاج عيسى**.

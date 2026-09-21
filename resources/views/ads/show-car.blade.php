@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $ad->title . ' | MB MOTORS')
+@section('title', $ad->title . ' | HA')
 
 @section('content')
 <!-- تخصيص الألوان الداكنة والزمردية لصفحة تفاصيل السيارة -->
