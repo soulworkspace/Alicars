@@ -19,20 +19,20 @@ class AdController extends Controller
      * عرض المتجر العالمي (دمج الحقيقي والوهمي)
      */
     public function index(Request $request)
-{
-    // Load the image album in display order so cards can use the same primary image.
-    $ads = Ad::with([
-            'category',
-            'images' => fn ($query) => $query
-                ->orderByDesc('is_primary')
-                ->orderBy('sort_order'),
-        ])
-        ->where('status', 'active') // عرض الإعلانات النشطة فقط
-        ->latest() // الأحدث أولاً
-        ->paginate(12); // تقسيم الصفحات (Pagination)
+    {
+        // Load the image album in display order so cards can use the same primary image.
+        $ads = Ad::with([
+                'category',
+                'images' => fn ($query) => $query
+                    ->orderByDesc('is_primary')
+                    ->orderBy('sort_order'),
+            ])
+            ->where('status', 'active') // عرض الإعلانات النشطة فقط
+            ->latest() // الأحدث أولاً
+            ->paginate(12); // تقسيم الصفحات (Pagination)
 
-    return view('ads.index', compact('ads'));
-}
+        return view('ads.index', compact('ads'));
+    }
 
     /**
      * صفحة إنشاء إعلان جديد
@@ -195,38 +195,34 @@ class AdController extends Controller
      * تحديث البيانات في قاعدة البيانات
      */
     public function update(Request $request, Ad $ad)
-{
-    // 1. التحقق من الصلاحية (Security Check)
-    // نضمن أن البائع الحالي هو فقط من يمكنه تعديل إعلانه
-    if (auth()->id() !== $ad->user_id) {
-        return redirect()->route('my-ads')->with('error', 'غير مسموح لك بتعديل هذا الإعلان.');
+    {
+        if (auth()->id() !== $ad->user_id) {
+            return redirect()->route('my-ads')->with('error', 'غير مسموح لك بتعديل هذا الإعلان.');
+        }
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string|min:10',
+            'price' => 'nullable|numeric|min:0',
+            'city' => 'nullable|string|max:100',
+            'condition' => 'required|in:new,used',
+            'contact_phone' => 'nullable|string|max:20',
+            'is_negotiable' => 'nullable',
+        ]);
+
+        $validated['is_negotiable'] = $request->has('is_negotiable');
+
+        try {
+            $ad->update($validated);
+            
+            // مسح كاش المعاينة للإعلان عند التعديل
+            Cache::forget("ad-preview:{$ad->slug}");
+
+            return redirect()->route('ads.edit', $ad->id)->with('success', 'تم تحديث بيانات الإعلان بنجاح ✨');
+        } catch (\Exception $e) {
+            return back()->with('error', 'حدث خطأ أثناء التحديث، يرجى المحاولة لاحقاً.');
+        }
     }
-
-    // 2. التحقق من البيانات المدخلة (Validation)
-    $validated = $request->validate([
-        'title' => 'required|string|max:255',
-        'description' => 'required|string|min:10',
-        'price' => 'nullable|numeric|min:0',
-        'city' => 'nullable|string|max:100',
-        'condition' => 'required|in:new,used',
-        'contact_phone' => 'nullable|string|max:20',
-        'is_negotiable' => 'nullable', // سنتعامل معه كـ boolean بالأسفل
-    ]);
-
-    // 3. معالجة الـ Checkbox (لأن الـ checkbox لا يرسل قيمة إذا لم يتم تحديده)
-    $validated['is_negotiable'] = $request->has('is_negotiable');
-
-    // 4. تنفيذ التحديث في قاعدة البيانات
-    try {
-        $ad->update($validated);
-        
-        // إذا نجح التحديث، نعود لصفحة التعديل مع رسالة نجاح
-        return redirect()->route('ads.edit', $ad->id)->with('success', 'تم تحديث بيانات الإعلان بنجاح ✨');
-    } catch (\Exception $e) {
-        // في حال حدوث خطأ تقني غير متوقع
-        return back()->with('error', 'حدث خطأ أثناء التحديث، يرجى المحاولة لاحقاً.');
-    }
-}
 
     /**
      * حذف الإعلان
@@ -234,6 +230,8 @@ class AdController extends Controller
     public function destroy(Ad $ad)
     {
         $this->authorize('delete', $ad);
+        
+        Cache::forget("ad-preview:{$ad->slug}");
         $ad->delete();
 
         return redirect()->route('my-ads')
@@ -262,13 +260,31 @@ class AdController extends Controller
 
     /**
      * Return public image URLs and guarantee a usable fallback for empty albums.
+     * دعم كامل للروابط الخارجية والمحلية مع معالجة الصورة الافتراضية
      */
     private function imageUrls(Collection $images): Collection
     {
         $urls = $images
-            ->filter(fn ($image) => filled($image->image_path) && Storage::disk('public')->exists($image->image_path))
-            ->map(fn ($image) => Storage::disk('public')->url($image->image_path))
-            ->filter(fn ($url) => filled($url))
+            ->map(function ($image) {
+                $path = trim((string) ($image->image_path ?? ''));
+
+                if (blank($path)) {
+                    return null;
+                }
+
+                // 1. إذا كان المسار رابطاً إلكترونياً كاملاً (HTTP/HTTPS)
+                if (filter_var($path, FILTER_VALIDATE_URL)) {
+                    return $path;
+                }
+
+                // 2. إذا كان الملف موجوداً في التخزين المحلي (public disk)
+                if (Storage::disk('public')->exists($path)) {
+                    return Storage::disk('public')->url($path);
+                }
+
+                return null;
+            })
+            ->filter()
             ->values();
 
         return $urls->isNotEmpty()
@@ -301,7 +317,6 @@ class AdController extends Controller
                 'condition_text' => 'جديد',
                 'city' => $cities[array_rand($cities)],
                 'status' => 'active',
-                // استخدام صور عشوائية عالية الجودة
                 'primary_image_url' => "https://picsum.photos/seed/trico" . ($i + 100) . "/600/800",
                 'category' => (object)['name' => $catName],
                 'user' => (object)['name' => 'Verified Global Seller'],

@@ -1,22 +1,22 @@
 <!-- Footer Section Begin -->
-<footer class="footer-pro">
-    <div class="container">
+<footer class="footer-pro" dir="rtl">
+    <div class="container overflow-hidden">
         
         <!-- TOP CALL-TO-ACTION BANNER -->
-        <div class="footer-cta-card">
+        <div class="footer-cta-card mb-4">
             <div class="row align-items-center">
                 <div class="col-lg-7 col-md-12 text-center text-lg-start mb-3 mb-lg-0">
-                    <span class="cta-badge"><i class="fa fa-car me-1"></i> Best Deal Guarantee</span>
-                    <h2 class="cta-title">Buy, Sell or Exchange Your Vehicle</h2>
-                    <p class="cta-desc">Fast evaluation and direct communication in Algeria.</p>
+                    <span class="cta-badge"><i class="fa fa-car ms-1"></i> ضمان أفضل العروض</span>
+                    <h2 class="cta-title">اشترِ، بيع أو استبدل سيارتك بكل سهولة</h2>
+                    <p class="cta-desc">تقييم سريع وتواصل مباشر داخل الجزائر.</p>
                 </div>
                 <div class="col-lg-5 col-md-12">
                     <div class="cta-actions">
                         <a href="tel:0670897630" class="btn-cta-phone">
-                            <i class="fa fa-phone"></i> Call 0670897630
+                            <i class="fa fa-phone ms-1"></i> اتصل 0670897630
                         </a>
                         <a href="https://wa.me/213670897630" target="_blank" class="btn-cta-wa">
-                            <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                            <i class="fa-brands fa-whatsapp ms-1"></i> واتساب
                         </a>
                     </div>
                 </div>
@@ -24,7 +24,7 @@
         </div>
 
         <!-- MAIN FOOTER LINKS -->
-        <div class="row g-4 pt-4 pb-3">
+        <div class="row g-4 pt-2 pb-3">
             <!-- BRAND & ABOUT -->
             <div class="col-lg-4 col-md-6 text-center text-md-start">
                 <div class="footer-brand-block">
@@ -32,57 +32,57 @@
                         <img src="{{ asset('logo.png') }}" alt="Jmou3y Auto" class="footer-logo">
                     </a>
                     <p class="footer-about-text">
-                        Your trusted marketplace for buying, selling, and trading vehicles across Algeria.
+                        منصتك الموثوقة لشراء وبيع واستبدال السيارات في جميع أنحاء الجزائر.
                     </p>
                     <div class="social-pills justify-content-center justify-content-md-start my-3">
                         <a href="https://www.instagram.com/el_hadjaissa/" target="_blank" class="social-pill insta" aria-label="Instagram">
-                            <i class="fa-brands fa-instagram"></i> Instagram
+                            <i class="fa-brands fa-instagram"></i> إنستغرام
                         </a>
                         <a href="https://wa.me/213670897630" target="_blank" class="social-pill wa" aria-label="WhatsApp">
-                            <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                            <i class="fa-brands fa-whatsapp"></i> واتساب
                         </a>
                     </div>
                 </div>
             </div>
 
-            <!-- NAVIGATION & CATEGORIES IN 2 COLUMNS ON MOBILE -->
+            <!-- NAVIGATION & CATEGORIES -->
             <div class="col-6 col-lg-2">
-                <h5 class="footer-heading">Navigation</h5>
+                <h5 class="footer-heading">التنقل السريع</h5>
                 <ul class="footer-menu">
-                    <li><a href="{{ url('/') }}">Home</a></li>
-                    <li><a href="{{ url('/#services') }}">Services</a></li>
-                    <li><a href="{{ url('/#Trusted') }}">A Trusted</a></li>
-                    <li><a href="{{ url('/ads') }}">Cars</a></li>
-                    <li><a href="https://wa.me/213670897630" target="_blank">Contact</a></li>
+                    <li><a href="{{ url('/') }}">الرئيسية</a></li>
+                    <li><a href="{{ url('/#services') }}">الخدمات</a></li>
+                    <li><a href="{{ url('/#Trusted') }}">من نحن</a></li>
+                    <li><a href="{{ url('/ads') }}">السيارات</a></li>
+                    <li><a href="https://wa.me/213670897630" target="_blank">تواصل معنا</a></li>
                 </ul>
             </div>
 
             <div class="col-6 col-lg-2">
-                <h5 class="footer-heading">Categories</h5>
+                <h5 class="footer-heading">التصنيفات</h5>
                 <ul class="footer-menu">
-                    <li><a href="#">Sedan</a></li>
-                    <li><a href="#">SUV & 4x4</a></li>
-                    <li><a href="#">Commercial</a></li>
-                    <li><a href="#">Hatchback</a></li>
+                    <li><a href="#">سيدان (Sedan)</a></li>
+                    <li><a href="#">رباعية الدفع (SUV)</a></li>
+                    <li><a href="#">تجاري (Commercial)</a></li>
+                    <li><a href="#">هاتشباك (Hatchback)</a></li>
                 </ul>
             </div>
 
             <!-- TOP BRANDS -->
             <div class="col-lg-4 col-md-12 mt-4 mt-lg-0">
-                <h5 class="footer-heading text-center text-md-start">Popular Brands</h5>
+                <h5 class="footer-heading text-center text-md-start">العلامات التجارية الشائعة</h5>
                 <div class="row g-2">
                     <div class="col-6">
                         <ul class="footer-menu">
-                            <li><a href="#">Toyota</a></li>
-                            <li><a href="#">Hyundai</a></li>
-                            <li><a href="#">Peugeot</a></li>
+                            <li><a href="#">تويوتا (Toyota)</a></li>
+                            <li><a href="#">هيونداي (Hyundai)</a></li>
+                            <li><a href="#">بيجو (Peugeot)</a></li>
                         </ul>
                     </div>
                     <div class="col-6">
                         <ul class="footer-menu">
-                            <li><a href="#">Renault</a></li>
-                            <li><a href="#">Volkswagen</a></li>
-                            <li><a href="#">Dacia</a></li>
+                            <li><a href="#">رونو (Renault)</a></li>
+                            <li><a href="#">فولكسفاغن (Volkswagen)</a></li>
+                            <li><a href="#">داتشيا (Dacia)</a></li>
                         </ul>
                     </div>
                 </div>
@@ -91,8 +91,7 @@
 
         <!-- COPYRIGHT BOTTOM -->
         <div class="footer-bottom">
-            <p>&copy; <script>document.write(new Date().getFullYear());</script> <strong>Jmou3y Auto Algeria</strong></p>
-        </div>
+<p class="m-0">&copy; {{ date('Y') }} <strong>جميع الحقوق محفوظة لـوكالة الحاج عيسى  الجزائر</strong></p>        </div>
 
     </div>
 </footer>
@@ -102,7 +101,7 @@
     <div class="h-100 d-flex align-items-center justify-content-center position-relative">
         <div class="search-close-switch"><i class="fa fa-times"></i></div>
         <form class="search-model-form px-3">
-            <input type="text" id="search-input" placeholder="Search vehicle by name or brand...">
+            <input type="text" id="search-input" placeholder="ابحث عن سيارة باسم أو الماركة...">
         </form>
     </div>
 </div>
@@ -115,10 +114,10 @@
         color: #94A3B8;
         padding-top: 30px;
         padding-bottom: 20px;
-        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        font-family: inherit;
     }
 
-    /* CTA CARD (DESKTOP & MOBILE RESPONSIVE) */
+    /* CTA CARD RESPONSIVE */
     .footer-cta-card {
         background: linear-gradient(135deg, #1D3354 0%, #111D32 100%);
         border: 1px solid rgba(255, 255, 255, 0.08);
@@ -219,12 +218,14 @@
         font-weight: 700;
         margin-bottom: 12px;
         letter-spacing: 0.3px;
+        text-align: right;
     }
 
     .footer-menu {
         list-style: none;
         padding: 0;
         margin: 0;
+        text-align: right;
     }
 
     .footer-menu li {
@@ -252,7 +253,7 @@
         color: #64748B;
     }
 
-    /* SEARCH MODAL MOBILE ADJUSTMENTS */
+    /* SEARCH MODAL ADJUSTMENTS */
     .search-model-form input {
         background: transparent;
         border: none;
@@ -262,6 +263,7 @@
         width: 100%;
         padding: 8px 0;
         outline: none;
+        text-align: right;
     }
     
     .search-close-switch {
@@ -276,7 +278,7 @@
         cursor: pointer;
         font-size: 16px;
         top: 20px;
-        right: 20px;
+        left: 20px;
     }
 
     /* MEDIA QUERIES FOR DESKTOP (>= 992px) */
@@ -284,7 +286,7 @@
         .footer-pro { padding-top: 50px; }
         .footer-cta-card { padding: 28px; }
         .cta-title { font-size: 22px; }
-        .cta-actions { justify-content: flex-end; margin-top: 0; }
+        .cta-actions { justify-content: flex-start; margin-top: 0; }
         .btn-cta-phone, .btn-cta-wa { flex: initial; padding: 12px 22px; font-size: 14px; }
         .footer-logo { max-width: 140px; }
         .footer-heading { font-size: 15px; margin-bottom: 18px; }

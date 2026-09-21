@@ -6,7 +6,6 @@ use Livewire\Component;
 use App\Models\Order;
 use App\Models\OrderStatusHistory;
 use Illuminate\Support\Facades\DB;
-use App\Notifications\OrderStatusUpdatedNotification;
 
 class OrderShow extends Component
 {
@@ -44,21 +43,15 @@ class OrderShow extends Component
                 'order_id' => $this->order->id,
                 'user_id'  => auth()->id(),
                 'status'   => $value,
-                'note'     => $this->note ?: null,
             ]);
         });
 
         $this->order->refresh();
         $this->status = $this->order->status;
-        $this->note = ''; // إعادة تعيين الملاحظة
+        $this->note = '';
 
-        // 3. إرسال إشعار للمشتري
-        if ($this->order->buyer) {
-            $this->order->buyer->notify(new OrderStatusUpdatedNotification($this->order));
-        }
-
-        // 4. إطلاق الأحداث والتنبيهات للواجهة
-        $this->dispatch('status-updated', message: 'تم حفظ حالة الطلب بنجاح وإشعار العميل.');
+        // Notify the current Livewire page without depending on an unavailable notification class.
+        $this->dispatch('status-updated', message: 'تم حفظ حالة الطلب بنجاح.');
         session()->flash('success', 'تم تحديث حالة الطلب وتسجيل التغيير.');
     }
 

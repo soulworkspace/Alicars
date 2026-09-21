@@ -1,0 +1,18 @@
+/* إصلاح عام لمشكلة البروز الأفقي */
+html, body {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+/* إصلاح سلوك OwlCarousel داخل الكروت */
+.car__item__pic .owl-carousel,
+.car__item__pic .owl-stage-outer,
+.car__item__pic .owl-stage {
+    max-width: 100% !important;
+}
+
+/* حماية حواف الصفوف في Bootstrap */
+.row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}

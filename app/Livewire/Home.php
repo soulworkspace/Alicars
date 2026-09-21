@@ -13,7 +13,10 @@ class Home extends Component
         $recentAds = Ad::with([
             'attributes:id,name,label',
             'category:id,name',
-            'images:id,ad_id,image_path,is_primary,sort_order',
+            'images' => fn ($query) => $query
+                ->select('id', 'ad_id', 'image_path', 'is_primary', 'sort_order')
+                ->orderByDesc('is_primary')
+                ->orderBy('sort_order'),
         ])
             ->where('status', 'active')
             ->latest()
@@ -24,7 +27,10 @@ class Home extends Component
         $featuredAds = FeaturedAd::with([
             'ad.attributes:id,name,label',
             'ad.category:id,name',
-            'ad.images:id,ad_id,image_path,is_primary,sort_order',
+            'ad.images' => fn ($query) => $query
+                ->select('id', 'ad_id', 'image_path', 'is_primary', 'sort_order')
+                ->orderByDesc('is_primary')
+                ->orderBy('sort_order'),
         ])
             ->where('is_active', true)
             ->get();
