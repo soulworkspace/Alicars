@@ -1,149 +1,165 @@
 <div class="car-component-root">
 <section class="car spad" id="collections">
     <div class="container">
+        <!-- Section Header -->
         <div class="row">
             <div class="col-lg-12">
                 <div class="space-y-2 mb-4 text-center text-md-left">
-                    <span class="text-brand font-black uppercase block" style="color: #4B9FE1; letter-spacing: 3px; font-weight: 700; font-size: 10px;">LATEST DROP</span>
+                    <span class="text-brand font-black uppercase block tracking-wider" style="color: #4B9FE1; font-weight: 700; font-size: 10px; letter-spacing: 3px;">LATEST DROP</span>
                     <h2 class="font-black text-uppercase" style="font-weight: 900; font-size: 2.5rem; color: #18181b;">
                         Recent Arrivals<span style="color: #4B9FE1;">.</span>
                     </h2>
                 </div>
                 
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-5 gap-3">
-                    <ul class="filter__controls m-0 p-0 d-flex flex-wrap gap-2 justify-content-center">
-                        <li class="active" data-filter="*">All Vehicles</li>
-                        <li data-filter=".sale">Latest Sales</li>
+                    <ul class="filter__controls m-0 p-0 d-flex flex-wrap gap-2 justify-content-center" role="tablist">
+                        <li class="active cursor-pointer" data-filter="*" role="tab" aria-selected="true">All Vehicles</li>
+                        <li class="cursor-pointer" data-filter=".sale" role="tab" aria-selected="false">Latest Sales</li>
                     </ul>
                     
                     <a href="{{ route('ads.index') }}" class="group d-flex align-items-center gap-2 text-uppercase font-weight-bold text-secondary discover-link" style="font-size: 12px; letter-spacing: 1px; text-decoration: none;">
                         Discover More 
-                        <i class="fa-solid fa-arrow-right-long transition-transform mx-2"></i>
+                        <i class="fa-solid fa-arrow-right-long transition-transform mx-2" aria-hidden="true"></i>
                     </a>
                 </div>
             </div>
         </div>
         
+        <!-- Cards Grid -->
         <div class="row car-filter gy-4">
             @forelse($recentAds as $ad)
                 @php
-                    $adAttributes = $ad->relationLoaded('attributes')
-                        ? $ad->attributes->mapWithKeys(function ($attribute) {
-                            $key = strtolower((string) ($attribute->name ?: $attribute->label));
-                            return [$key => $attribute->pivot->value ?? null];
-                        })
-                        : collect();
+                    $getSpec = function (array $keys, $fallback = 'N/A') use ($ad) {
+                        if (!$ad->relationLoaded('attributes')) {
+                            return $fallback;
+                        }
 
-                    $attributeValue = function (array $keys, $fallback = 'N/A') use ($adAttributes) {
                         foreach ($keys as $key) {
-                            if (filled($adAttributes->get(strtolower($key)))) {
-                                return $adAttributes->get(strtolower($key));
+                            $found = $ad->attributes->first(function ($attr) use ($key) {
+                                $name = strtolower((string) ($attr->name ?: $attr->label));
+                                return $name === strtolower($key);
+                            });
+
+                            if ($found && filled($found->pivot?->value)) {
+                                return $found->pivot->value;
                             }
                         }
-                        return filled($fallback) ? $fallback : 'N/A';
+
+                        return $fallback;
                     };
 
-                    $year = $attributeValue(['year', 'model_year', 'السنة']);
-                    $make = $attributeValue(['make', 'brand', 'marque', 'العلامة'], 'Auto');
-                    $transmission = $attributeValue(['transmission', 'gearbox', 'boite', 'ناقل الحركة'], 'Auto');
-                    $condition = $ad->condition ?: 'used';
-                    $categoryName = $ad->category?->name ?: 'Vehicle';
+                    $year = $getSpec(['year', 'model_year', 'السنة']);
+                    $make = $getSpec(['make', 'brand', 'marque', 'العلامة'], 'Auto');
+                    $transmission = $getSpec(['transmission', 'gearbox', 'boite', 'ناقل الحركة'], 'Auto');
+                    $condition = $ad->condition ?? 'used';
+                    $categoryName = $ad->category?->name ?? 'Vehicle';
                     $previewUrl = route('ads.preview', $ad->slug);
                 @endphp
 
                 <div class="col-lg-3 col-md-4 col-sm-6 col-12 mix sale">
-                    <div class="car__item position-relative bg-white shadow-sm" data-preview-url="{{ $previewUrl }}">
+                    <article class="car__item position-relative bg-white shadow-sm h-100 d-flex flex-column overflow-hidden" data-preview-url="{{ $previewUrl }}">
                         
                         <!-- 1. Top Header Specs -->
                         <div class="car__item__top__specs border-bottom bg-light py-2 px-1">
                             <div class="row m-0 text-center">
                                 <div class="col-4 p-0">
                                     <span class="d-block text-muted text-uppercase" style="font-size: 10px;">Year</span>
-                                    <strong class="d-block text-dark text-truncate" style="font-size: 12px;">{{ $year }}</strong>
+                                    <strong class="d-block text-dark text-truncate px-1" style="font-size: 12px;">{{ $year }}</strong>
                                 </div>
                                 <div class="col-4 p-0 border-start border-end">
                                     <span class="d-block text-muted text-uppercase" style="font-size: 10px;">Make</span>
-                                    <strong class="d-block text-dark text-truncate" style="font-size: 12px;">{{ $make }}</strong>
+                                    <strong class="d-block text-dark text-truncate px-1" style="font-size: 12px;">{{ $make }}</strong>
                                 </div>
                                 <div class="col-4 p-0">
                                     <span class="d-block text-muted text-uppercase" style="font-size: 10px;">Transmission</span>
-                                    <strong class="d-block text-dark text-truncate" style="font-size: 12px;">{{ $transmission }}</strong>
+                                    <strong class="d-block text-dark text-truncate px-1" style="font-size: 12px;">{{ $transmission }}</strong>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 2. Image Slider + Status Badge & Price Overlay -->
-                        <div class="position-relative">
-                            <!-- Status Badge (NEW / USED) -->
+                        <!-- 2. Image Container + Badges -->
+                        <div class="car-media-wrapper position-relative overflow-hidden bg-light" style="height: 210px; min-height: 210px;">
+                            <!-- Status Badge -->
                             <span class="badge-status text-uppercase">
                                 {{ $condition }}
                             </span>
 
-                            <div class="car__item__pic__slider owl-carousel preview-trigger">
+                            <!-- Image Carousel / Fallback -->
+                            <div class="car__item__pic__slider owl-carousel preview-trigger h-100">
                                 @if($ad->images && $ad->images->isNotEmpty())
                                     @foreach($ad->images->take(3) as $img)
-                                        <img src="{{ asset('storage/' . $img->image_path) }}" alt="{{ $ad->title }}" style="object-fit: cover; height: 210px; width: 100%;">
+                                        <div class="car-img-holder h-100 w-100">
+                                            <img src="{{ Storage::disk('public')->exists($img->image_path) ? Storage::disk('public')->url($img->image_path) : asset('bgg.jfif') }}" 
+                                                 alt="{{ $ad->title }}" 
+                                                 loading="lazy" 
+                                                 style="object-fit: cover; height: 210px; width: 100%; display: block;">
+                                        </div>
                                     @endforeach
                                 @else
-                                    <div class="w-100 d-flex align-items-center justify-content-center bg-light text-muted" style="height: 210px;">
-                                        <i class="fa-solid fa-image" style="font-size: 3rem; color: #1D3354;"></i>
+                                    <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center bg-light text-muted">
+                                        <i class="fa-solid fa-car" style="font-size: 2.5rem; color: #4B9FE1;" aria-hidden="true"></i>
+                                        <span class="mt-1" style="font-size: 11px;">No Image Available</span>
                                     </div>
                                 @endif
                             </div>
 
                             <!-- Price Overlay -->
                             <div class="car-price-overlay">
-                                @if(isset($ad->old_price) && $ad->old_price)
-                                    <span class="text-decoration-line-through opacity-75 mr-1" style="font-size: 11px;">{{ number_format($ad->old_price) }} DA</span>
+                                @if(!empty($ad->old_price))
+                                    <span class="text-decoration-line-through opacity-75 me-1" style="font-size: 11px;">{{ number_format($ad->old_price) }} DA</span>
                                 @endif
                                 <span>{{ number_format($ad->price) }} DA</span>
                             </div>
                         </div>
                         
                         <!-- 3. Card Details -->
-                        <div class="car__item__text p-3">
-                            <!-- Vehicle Category -->
-                            <div class="text-uppercase font-weight-bold mb-1" style="color: #4B9FE1; font-size: 11px; letter-spacing: 0.5px;">
-                                {{ $categoryName }}
+                        <div class="car__item__text p-3 d-flex flex-column justify-content-between flex-grow-1">
+                            <div>
+                                <!-- Vehicle Category -->
+                                <div class="text-uppercase font-weight-bold mb-1" style="color: #4B9FE1; font-size: 11px; letter-spacing: 0.5px;">
+                                    {{ $categoryName }}
+                                </div>
+
+                                <!-- Listing Title -->
+                                <h5 class="font-weight-bold mb-2 text-truncate" style="font-size: 1rem;">
+                                    <a href="{{ route('ads.show', $ad->slug) }}" class="text-decoration-none text-dark card-title-link preview-trigger">
+                                        {{ $ad->title }}
+                                    </a>
+                                </h5>
                             </div>
 
-                            <!-- Listing Title -->
-                            <h5 class="font-weight-bold mb-3 text-truncate" style="font-size: 1rem;">
-                                <a href="{{ route('ads.show', $ad->slug) }}" class="stretched-link text-decoration-none text-dark card-title-link preview-trigger">
-                                    {{ $ad->title }}
-                                </a>
-                            </h5>
-
                             <!-- Bottom Specs -->
-                            <div class="border-top pt-3 mt-2">
+                            <div class="border-top pt-2 mt-auto">
                                 <div class="row m-0 text-center">
                                     <div class="col-4 p-0">
                                         <span class="d-block text-muted text-uppercase" style="font-size: 10px;">Year</span>
-                                        <span class="font-weight-bold text-dark d-block text-truncate" style="font-size: 12px;">{{ $year }}</span>
+                                        <span class="font-weight-bold text-dark d-block text-truncate px-1" style="font-size: 12px;">{{ $year }}</span>
                                     </div>
                                     <div class="col-4 p-0 border-start border-end">
                                         <span class="d-block text-muted text-uppercase" style="font-size: 10px;">Make</span>
-                                        <span class="font-weight-bold text-dark d-block text-truncate" style="font-size: 12px;">{{ $make }}</span>
+                                        <span class="font-weight-bold text-dark d-block text-truncate px-1" style="font-size: 12px;">{{ $make }}</span>
                                     </div>
                                     <div class="col-4 p-0">
                                         <span class="d-block text-muted text-uppercase" style="font-size: 10px;">Transmission</span>
-                                        <span class="font-weight-bold text-dark d-block text-truncate" style="font-size: 12px;">{{ $transmission }}</span>
+                                        <span class="font-weight-bold text-dark d-block text-truncate px-1" style="font-size: 12px;">{{ $transmission }}</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Hover/Touch Quick Preview Tooltip -->
                         <aside class="car-preview" aria-hidden="true" role="dialog" aria-label="Quick vehicle preview">
                             <div class="car-preview__loading">Loading preview...</div>
                             <div class="car-preview__content"></div>
                         </aside>
-                        
-                    </div>
+
+                    </article>
                 </div>
             @empty
+                <!-- Skeleton Loaders -->
                 @for($i = 0; $i < 4; $i++)
                     <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-                        <div class="car__item" style="opacity: 0.6; animation: pulse 1.5s infinite ease-in-out;">
+                        <div class="car__item skeleton-card bg-white p-0" aria-hidden="true">
                             <div style="height: 35px; background: #f3f4f6;"></div>
                             <div style="height: 210px; background: #eee;"></div>
                             <div class="p-3">
@@ -164,13 +180,47 @@
         border-radius: 8px;
         border: 1px solid #eef2f6;
         transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-        isolation: isolate;
     }
     
     .car__item:hover {
         transform: translateY(-6px);
         border-color: #4B9FE1 !important;
         box-shadow: 0 12px 25px rgba(29, 51, 84, 0.12);
+        z-index: 20;
+    }
+
+    .car-media-wrapper {
+        position: relative;
+        z-index: 1;
+    }
+
+    .badge-status {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 15;
+        background-color: #e53e3e;
+        color: #ffffff;
+        font-size: 10px;
+        font-weight: 800;
+        padding: 4px 8px;
+        border-radius: 4px;
+        letter-spacing: 0.5px;
+        pointer-events: none;
+    }
+
+    .car-price-overlay {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        z-index: 15;
+        background: #4B9FE1;
+        color: #ffffff;
+        font-weight: 800;
+        font-size: 0.9rem;
+        padding: 5px 12px;
+        border-top-left-radius: 6px;
+        pointer-events: none;
     }
 
     .car-preview {
@@ -211,9 +261,17 @@
     .car-preview__price { margin-top: 11px; color: #8fd0ff; font-size: 18px; font-weight: 800; }
     .car-preview__description { margin: 8px 0 0; color: rgba(255, 255, 255, 0.74); font-size: 11px; line-height: 1.5; }
 
-    @media (max-width: 767px) {
-        .car-preview { top: calc(100% + 10px); right: 8px; left: 8px; width: auto; transform: translateY(-5px); }
-        .car__item.preview-open .car-preview { transform: translateY(0); }
+    @media (max-width: 991px) {
+        .car-preview { 
+            top: calc(100% + 10px); 
+            right: 0; 
+            left: 0; 
+            width: 100%; 
+            transform: translateY(-5px); 
+        }
+        .car__item.preview-open .car-preview { 
+            transform: translateY(0); 
+        }
     }
 
     .card-title-link {
@@ -222,39 +280,6 @@
 
     .car__item:hover .card-title-link {
         color: #4B9FE1 !important;
-    }
-
-    .badge-status {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        z-index: 10;
-        background-color: #e53e3e;
-        color: #ffffff;
-        font-size: 10px;
-        font-weight: 800;
-        padding: 3px 8px;
-        border-radius: 3px;
-        letter-spacing: 0.5px;
-    }
-
-    .car-price-overlay {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        z-index: 10;
-        background: #4B9FE1;
-        color: #ffffff;
-        font-weight: 800;
-        font-size: 0.95rem;
-        padding: 6px 14px;
-        border-top-left-radius: 6px;
-    }
-
-    .car__item .owl-dots, 
-    .car__item .owl-nav {
-        position: relative;
-        z-index: 5;
     }
 
     .filter__controls li.active, 
@@ -278,11 +303,16 @@
         transition: transform 0.3s ease;
     }
 
+    .skeleton-card {
+        opacity: 0.6;
+        animation: pulse 1.5s infinite ease-in-out;
+    }
+
     @keyframes pulse {
         0%, 100% { opacity: 1; }
-        50% { opacity: .4; }
+        50% { opacity: 0.4; }
     }
 </style>
 
-<script src="{{ asset('js/car-preview.js') }}"></script>
+<script src="{{ asset('js/car-preview.js') }}" defer></script>
 </div>

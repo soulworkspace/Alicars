@@ -9,6 +9,7 @@ use Illuminate\Support\Collection;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
 
@@ -19,8 +20,13 @@ class AdController extends Controller
      */
     public function index(Request $request)
 {
-    // جلب الإعلانات النشطة مع العلاقات (Category) لتحسين الأداء (Eager Loading)
-    $ads = Ad::with('category')
+    // Load the image album in display order so cards can use the same primary image.
+    $ads = Ad::with([
+            'category',
+            'images' => fn ($query) => $query
+                ->orderByDesc('is_primary')
+                ->orderBy('sort_order'),
+        ])
         ->where('status', 'active') // عرض الإعلانات النشطة فقط
         ->latest() // الأحدث أولاً
         ->paginate(12); // تقسيم الصفحات (Pagination)
@@ -69,7 +75,7 @@ class AdController extends Controller
 
         $ad = Ad::create([
             ...$validated,
-            'slug' => Str::slug($validated['title']),
+            'slug' => Str::slug($validated['title']) . '-' . Str::lower(Str::random(6)),
             'user_id' => Auth::id(),
             'store_id' => $user->store?->id,
             'status' => 'pending', // يحتاج مراجعة الإدارة أولاً
@@ -82,6 +88,9 @@ class AdController extends Controller
                 $path = $image->store('ads/' . $ad->id, 'public');
                 $ad->images()->create([
                     'image_path' => $path,
+                    'original_name' => $image->getClientOriginalName(),
+                    'mime_type' => $image->getMimeType(),
+                    'file_size' => $image->getSize(),
                     'is_primary' => $index === 0,
                     'sort_order' => $index,
                 ]);
@@ -98,7 +107,15 @@ class AdController extends Controller
     public function show($slug)
     {
         $ad = Ad::where('slug', $slug)
-            ->with(['user', 'store', 'category', 'images', 'attributes'])
+            ->with([
+                'user',
+                'store',
+                'category',
+                'images' => fn ($query) => $query
+                    ->orderByDesc('is_primary')
+                    ->orderBy('sort_order'),
+                'attributes',
+            ])
             ->firstOrFail();
 
         $ad->incrementViews();
@@ -118,7 +135,10 @@ class AdController extends Controller
                 ->with([
                     'attributes:id,name,label',
                     'category:id,name',
-                    'images:id,ad_id,image_path,is_primary,sort_order',
+                    'images' => fn ($query) => $query
+                        ->select('id', 'ad_id', 'image_path', 'is_primary', 'sort_order')
+                        ->orderByDesc('is_primary')
+                        ->orderBy('sort_order'),
                 ])
                 ->firstOrFail();
 
@@ -154,7 +174,7 @@ class AdController extends Controller
                     'mileage' => $value(['mileage', 'kilometers', 'kilometres', 'kilometrage', 'الكيلومترات']),
                     'documents' => $value(['documents', 'document_status', 'registration', 'gray_card', 'carte_grise', 'البطاقة الرمادية', 'الوثائق']),
                 ],
-                'images' => $ad->images->take(3)->map(fn ($image) => asset('storage/' . $image->image_path))->values(),
+                'images' => $this->imageUrls($ad->images->take(3)),
             ];
         });
 
@@ -228,11 +248,32 @@ class AdController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
         $ads = $user->ads()
-            ->with('category', 'images')
+            ->with([
+                'category',
+                'images' => fn ($query) => $query
+                    ->orderByDesc('is_primary')
+                    ->orderBy('sort_order'),
+            ])
             ->latest()
             ->paginate(20);
 
         return view('ads.my-ads', compact('ads'));
+    }
+
+    /**
+     * Return public image URLs and guarantee a usable fallback for empty albums.
+     */
+    private function imageUrls(Collection $images): Collection
+    {
+        $urls = $images
+            ->filter(fn ($image) => filled($image->image_path) && Storage::disk('public')->exists($image->image_path))
+            ->map(fn ($image) => Storage::disk('public')->url($image->image_path))
+            ->filter(fn ($url) => filled($url))
+            ->values();
+
+        return $urls->isNotEmpty()
+            ? $urls
+            : collect([asset('bgg.jfif')]);
     }
 
     /**

@@ -29,14 +29,8 @@
                         <tr class="hover:bg-white/5 transition-colors">
                             <td class="px-4 py-4">
                                 <div class="flex items-center gap-3">
-                                    @if($ad->images->count() > 0)
-                                        <img src="{{ asset('storage/' . $ad->images->first()->image_path) }}" 
-                                             alt="{{ $ad->title }}" class="w-12 h-12 object-cover rounded-lg">
-                                    @else
-                                        <div class="w-12 h-12 bg-emerald-500/10 rounded-lg flex items-center justify-center">
-                                            <i class="fa-solid fa-car text-emerald-400"></i>
-                                        </div>
-                                    @endif
+                                    <img src="{{ $ad->primary_image_url }}"
+                                         alt="{{ $ad->title }}" class="w-12 h-12 object-cover rounded-lg">
                                     <div>
                                         <p class="font-bold">{{ $ad->title }}</p>
                                         <p class="text-sm text-gray-500">{{ $ad->category->name }}</p>

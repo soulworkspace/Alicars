@@ -13,6 +13,9 @@ class AdImage extends Model
     protected $fillable = [
         'ad_id',
         'image_path',
+        'original_name',
+        'mime_type',
+        'file_size',
         'sort_order',
         'is_primary',
     ];
@@ -20,6 +23,7 @@ class AdImage extends Model
     protected $casts = [
         'is_primary' => 'boolean',
         'sort_order' => 'integer',
+        'file_size' => 'integer',
     ];
 
     public function ad(): BelongsTo

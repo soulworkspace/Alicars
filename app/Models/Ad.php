@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str; // ضروري لتوليد الروابط
+use Illuminate\Support\Facades\Storage;
 
 class Ad extends Model
 {
@@ -92,17 +93,15 @@ class Ad extends Model
      */
     public function getPrimaryImageUrlAttribute(): string
     {
-        if ($this->primaryImage) {
-            return asset('storage/' . $this->primaryImage->image_path);
+        $image = $this->relationLoaded('images')
+            ? $this->images->first()
+            : $this->primaryImage()->first();
+
+        if ($image && filled($image->image_path) && Storage::disk('public')->exists($image->image_path)) {
+            return Storage::disk('public')->url($image->image_path);
         }
 
-        $firstImage = $this->images()->first();
-        if ($firstImage) {
-            return asset('storage/' . $firstImage->image_path);
-        }
-
-        // صورة افتراضية بلمسة تريكو في حال عدم وجود صور
-        return 'https://via.placeholder.com/400x600?text=TRICO+Fashion';
+        return asset('bgg.jfif');
     }
 
     /**
