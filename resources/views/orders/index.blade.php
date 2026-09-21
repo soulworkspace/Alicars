@@ -93,6 +93,24 @@
                             تفاصيل وثيقة الحجز <i class="fas fa-chevron-left mr-2"></i>
                         </a>
                     </div>
+
+                    <div class="mt-8 pt-6 border-t border-zinc-100 dark:border-zinc-800">
+                        <h4 class="text-xs font-black text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-5">سجل حالة الطلب</h4>
+                        <ol class="relative mr-2 border-r border-zinc-200 dark:border-zinc-700 space-y-5">
+                            @forelse($order->statusHistories as $history)
+                                <li class="mr-5">
+                                    <span class="absolute -right-1.5 mt-1.5 h-3 w-3 rounded-full bg-emerald-500 ring-4 ring-white dark:ring-zinc-900"></span>
+                                    <p class="text-sm font-bold text-zinc-800 dark:text-zinc-100">{{ $history->status_label }}</p>
+                                    <p class="text-[11px] text-zinc-400 mt-1">{{ $history->created_at->format('Y-m-d H:i') }}</p>
+                                    @if($history->user)
+                                        <p class="text-[10px] text-zinc-400 mt-1">بواسطة: {{ $history->user->name }}</p>
+                                    @endif
+                                </li>
+                            @empty
+                                <li class="mr-5 text-xs text-zinc-400">لا يوجد سجل للحالة حتى الآن.</li>
+                            @endforelse
+                        </ol>
+                    </div>
                 </div>
             @empty
                 {{-- واجهة السجل الفارغ المصممة بعناية --}}

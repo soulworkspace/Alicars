@@ -3,12 +3,14 @@
 namespace App\Livewire\Admin\Orders;
 
 use App\Models\Order;
+use App\Models\OrderStatusHistory;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class OrderDetails extends Component
 {
     public Order $order;
-    public $status;
+    public string $status = '';
 
     public function mount(Order $order)
 {
@@ -22,6 +24,7 @@ class OrderDetails extends Component
     }
 
     $this->order = $order;
+    $this->status = $order->status;
 }
 
     /**
@@ -29,16 +32,30 @@ class OrderDetails extends Component
      */
     public function updatedStatus($value)
     {
-        $this->order->update([
-            'status' => $value
-        ]);
+        $allowedStatuses = ['pending', 'processing', 'shipped', 'delivered', 'completed', 'cancelled'];
+        if (! in_array($value, $allowedStatuses, true) || $value === $this->order->status) {
+            return;
+        }
 
-        session()->flash('success', 'تم تحديث حالة الطلب بنجاح.');
+        DB::transaction(function () use ($value) {
+            $this->order->update(['status' => $value]);
+            OrderStatusHistory::create([
+                'order_id' => $this->order->id,
+                'user_id' => auth()->id(),
+                'status' => $value,
+            ]);
+        });
+
+        $this->order->refresh();
+        $this->status = $this->order->status;
+        session()->flash('success', 'تم تحديث حالة الطلب وتسجيل التغيير.');
     }
 
     public function render()
     {
-        return view('livewire.admin.orders.order-details')
+        $this->order->load(['buyer', 'listing', 'statusHistories.user']);
+
+        return view('livewire.admin.orders.order-details', ['order' => $this->order])
             ->layout('layouts.app');
     }
 }

@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="{{ asset('front/css/jquery-ui.min.css') }}" type="text/css">
     <link rel="stylesheet" href="{{ asset('front/css/owl.carousel.min.css') }}" type="text/css">
     <link rel="stylesheet" href="{{ asset('front/css/slicknav.min.css') }}" type="text/css">
+
     <link rel="stylesheet" href="{{ asset('front/css/style.css') }}" type="text/css">
 
     <style>

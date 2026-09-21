@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\OrderStatusHistory;
 use App\Models\Ad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -66,7 +67,7 @@ class CheckoutController extends Controller
             // --- السطر الناقص كان هنا: جلب بيانات الإعلان من قاعدة البيانات ---
             $ad = \App\Models\Ad::findOrFail($item['id']); 
 
-            \App\Models\Order::create([
+            $order = \App\Models\Order::create([
                 'buyer_id'         => Auth::id(),
                 'listing_id'       => $ad->id,
                 'seller_id'        => $ad->user_id, // الآن $ad معرف ولن يظهر الخطأ
@@ -79,6 +80,12 @@ class CheckoutController extends Controller
                 'city'             => $request->city,
                 'shipping_address' => $request->shipping_address,
                 'notes'            => $request->notes,
+            ]);
+
+            OrderStatusHistory::create([
+                'order_id' => $order->id,
+                'user_id' => Auth::id(),
+                'status' => 'pending',
             ]);
         }
 
@@ -111,10 +118,21 @@ class CheckoutController extends Controller
         }
 
         $request->validate([
-            'status' => 'required|in:pending,processing,shipped,completed,cancelled'
+            'status' => 'required|in:pending,processing,shipped,delivered,completed,cancelled'
         ]);
 
-        $order->update(['status' => $request->status]);
+        if ($order->status === $request->status) {
+            return back()->with('success', 'حالة الطلب لم تتغير.');
+        }
+
+        DB::transaction(function () use ($order, $request) {
+            $order->update(['status' => $request->status]);
+            OrderStatusHistory::create([
+                'order_id' => $order->id,
+                'user_id' => Auth::id(),
+                'status' => $request->status,
+            ]);
+        });
 
         return back()->with('success', 'تم تحديث حالة الطلب بنجاح.');
     }
@@ -127,7 +145,7 @@ class CheckoutController extends Controller
         $orders = Order::where('buyer_id', Auth::id())
             ->with(['listing' => function($q) {
                 $q->withTrashed(); // لجلب البيانات حتى لو حُذف الإعلان
-            }])
+            }, 'statusHistories.user'])
             ->latest()
             ->get();
 

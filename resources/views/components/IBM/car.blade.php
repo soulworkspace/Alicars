@@ -57,7 +57,7 @@
                 @endphp
 
                 <div class="col-lg-3 col-md-4 col-sm-6 col-12 mix sale">
-                    <article class="car__item position-relative bg-white shadow-sm h-100 d-flex flex-column overflow-hidden" data-preview-url="{{ $previewUrl }}">
+                    <article class="car__item position-relative bg-white shadow-sm h-100 d-flex flex-column" data-preview-url="{{ $previewUrl }}">
                         
                         <!-- 1. Top Header Specs -->
                         <div class="car__item__top__specs border-bottom bg-light py-2 px-1">
@@ -78,20 +78,21 @@
                         </div>
 
                         <!-- 2. Image Container + Badges -->
-                        <div class="car-media-wrapper position-relative overflow-hidden bg-light" style="height: 210px; min-height: 210px;">
+                        <div class="car-media-wrapper position-relative overflow-hidden bg-light" style="height: 210px; min-height: 210px; flex: 0 0 210px;">
                             <!-- Status Badge -->
                             <span class="badge-status text-uppercase">
                                 {{ $condition }}
                             </span>
 
                             <!-- Image Carousel / Fallback -->
-                            <div class="car__item__pic__slider owl-carousel preview-trigger h-100">
+                            <div class="car__item__pic__slider owl-carousel preview-trigger h-100 w-100">
                                 @if($ad->images && $ad->images->isNotEmpty())
                                     @foreach($ad->images->take(3) as $img)
                                         <div class="car-img-holder h-100 w-100">
                                             <img src="{{ Storage::disk('public')->exists($img->image_path) ? Storage::disk('public')->url($img->image_path) : asset('bgg.jfif') }}" 
                                                  alt="{{ $ad->title }}" 
                                                  loading="lazy" 
+                                                 onerror="this.onerror=null;this.src='{{ asset('bgg.jfif') }}';"
                                                  style="object-fit: cover; height: 210px; width: 100%; display: block;">
                                         </div>
                                     @endforeach
@@ -177,9 +178,11 @@
 
 <style>
     .car__item {
+        min-width: 0;
         border-radius: 8px;
         border: 1px solid #eef2f6;
         transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        overflow: visible;
     }
     
     .car__item:hover {
@@ -192,6 +195,25 @@
     .car-media-wrapper {
         position: relative;
         z-index: 1;
+        width: 100%;
+        overflow: hidden;
+        flex: 0 0 210px;
+    }
+
+    .car__item__pic__slider,
+    .car__item__pic__slider .owl-stage-outer,
+    .car__item__pic__slider .owl-stage,
+    .car__item__pic__slider .owl-item,
+    .car-img-holder {
+        height: 210px !important;
+        min-height: 210px;
+    }
+
+    .car__item__pic__slider img {
+        display: block;
+        width: 100%;
+        height: 210px;
+        object-fit: cover;
     }
 
     .badge-status {
@@ -260,6 +282,19 @@
     .car-preview__specs dd { margin: 2px 0 0; overflow: hidden; color: #fff; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
     .car-preview__price { margin-top: 11px; color: #8fd0ff; font-size: 18px; font-weight: 800; }
     .car-preview__description { margin: 8px 0 0; color: rgba(255, 255, 255, 0.74); font-size: 11px; line-height: 1.5; }
+
+    .car__item__text,
+    .car__item__text > div,
+    .card-title-link {
+        min-width: 0;
+    }
+
+    .card-title-link {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 
     @media (max-width: 991px) {
         .car-preview { 

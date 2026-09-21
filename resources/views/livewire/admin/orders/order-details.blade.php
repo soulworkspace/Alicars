@@ -115,13 +115,17 @@
                         <h3 class="font-bold text-slate-800 dark:text-white mb-5 flex items-center gap-2 justify-end">
                             الحالة الحالية <i class="fas fa-stream text-orange-500"></i>
                         </h3>
-                        <select wire:model.live="status" class="w-full rounded-xl bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-bold py-3 text-right focus:ring-2 focus:ring-orange-500 transition-all">
+                        <select wire:model.live="status" wire:loading.attr="disabled" wire:target="status" class="w-full rounded-xl bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-bold py-3 text-right focus:ring-2 focus:ring-orange-500 transition-all">
                             <option value="pending">⏳ قيد الانتظار</option>
                             <option value="processing">⚙️ جاري التجهيز</option>
                             <option value="shipped">🚚 تم الشحن</option>
-                            <option value="completed">✅ تم التسليم</option>
+                            <option value="delivered">✅ تم التسليم</option>
+                            <option value="completed">✅ مكتمل</option>
                             <option value="cancelled">❌ ملغي</option>
                         </select>
+                        <div wire:loading wire:target="status" class="mt-2 text-xs font-bold text-orange-500">
+                            <i class="fas fa-circle-notch fa-spin ml-1"></i> جاري حفظ الحالة...
+                        </div>
                     </div>
 
                     {{-- كرت التواصل --}}
@@ -132,7 +136,7 @@
                             تواصل سريع <i class="fas fa-comments"></i>
                         </h3>
                         <div class="space-y-4 relative z-10">
-                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $order->phone) }}?text={{ urlencode('مرحباً '.$order->buyer->name.'، معك إدارة MB MOTORS بخصوص طلبك رقم #'.$order->id) }}" 
+                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $order->phone) }}?text={{ urlencode('مرحباً '.$order->buyer->name.'، معك إدارة Hadj Aissa بخصوص طلبك رقم #'.$order->id) }}" 
                                target="_blank" 
                                class="flex items-center justify-center gap-3 w-full bg-[#25D366] text-white py-4 rounded-2xl font-black hover:scale-105 transition-transform shadow-lg shadow-emerald-500/20">
                                 <i class="fab fa-whatsapp text-2xl"></i> واتساب
