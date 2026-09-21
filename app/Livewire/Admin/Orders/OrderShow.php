@@ -67,7 +67,7 @@ class OrderShow extends Component
     // تحميل العلاقات المتاحة في موديل Order بدقة
     $this->order->load(['buyer', 'listing', 'statusHistories.user']);
 
-    return view('livewire.admin.orders.orders.details', [
+    return view('livewire.admin.orders.order-details', [
         'order' => $this->order
     ])->layout('layouts.admin');
 }
